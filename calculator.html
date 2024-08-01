@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <link rel="icon" type="image/x-icon" href="calcimg.png">
+    <link rel="stylesheet" href="calcstyle.css">
+    <title>Calculator!!!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header><img src="splogo.svg" alt="splitter" class="logo"></header>
+        <div class="calcinfo">
+            <div class="calcdisc">
+                
+                    <p class="text">Bill<p id="erbill" class="error"></p></p>
+                    <input type="number" class="input" placeholder="0" style="background-image:url('icon-dollar.svg');padding-left: 200px;" id="inbill">
+                <p class="text">Select Tip %<p id="errtip" class="error"></p>
+                <div class="butlay">
+                    <button class="tipbut" value="5" id="5"><b>5%</b></button>
+                    <button class="tipbut" value="10" id="10"><b>10%</b></button>
+                    <button class="tipbut" value="15" id="15"><b>15%</b></button>
+                    <button class="tipbut" value="25" id="25"><b>25%</b></button>
+                    <button class="tipbut" value="50" id="50"><b>50%</b></button>
+                    <input type="number" class="input" placeholder="Custom" style="color: rgb(0, 71, 75);" id="incus">
+                </div>
+                <p class="text">Number of People<p id="ernum" class="error"></p>
+                <input type="number" class="input" placeholder="0" style="background-image:url('icon-person.svg');padding-left: 200px;" id="inper">
+            </div> 
+            <div class="calcres">
+                <p class="value"><span class="calctxt"><b>Tip Amount</b><span id="tipam" class="val"><b>$0.00</b></span></span><br>/person</p>
+                <br>
+                <p class="value"><span class="calctxt"><b>Total</b><span id="total" class="val"><b>$0.00</b></span></span><br>/person</p>
+                <button id="reset" onclick="reset()"><b>RESET</b></button>
+            </div>
+        </div>  
+    <script>
+        let tip = 0;
+        let customTip = 0;
+        document.addEventListener('DOMContentLoaded', function() {
+            const tipButtons = document.querySelectorAll('.tipbut');            
+            tipButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    if (event.target.classList.contains('tipbut')) {
+                        const buttonValue = event.target.value;
+                        event.target.classList.add('active');
+                        document.querySelector('.tipbut.active').style.backgroundColor="rgb(38, 194, 173) ";
+                        document.querySelector('.tipbut.active').style.color="rgb(0, 71, 75)";
+                        tip = buttonValue / 100;
+                    }
+                });
+            });
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.input');
+            inputs.forEach(input => {
+                input.addEventListener('input', calctip);
+            });
+        });
+        function calctip() {
+            document.getElementById('reset').style.backgroundColor="";
+            document.getElementById('reset').style.color="";
+            const bill = document.getElementById('inbill').value;
+            const people = document.getElementById('inper').value;
+            customTip = document.getElementById('incus').value;
+            if (bill === "" || bill <= 0) {
+                document.getElementById('erbill').textContent = "Please enter a valid bill amount";
+                document.getElementById('inbill').style.borderColor = "red";
+                return;
+            } else {
+                document.getElementById('erbill').textContent = "";
+                document.getElementById('inbill').style.borderColor = "";
+            }
+            if (customTip !== "") {
+                if (customTip < 0) {
+                    document.getElementById('errtip').textContent = "Invalid input";
+                    document.getElementById('incus').style.borderColor = "red";
+                    return;
+                } else {
+                    document.getElementById('errtip').textContent = "";
+                    document.getElementById('incus').style.borderColor = "";
+                    tip = customTip / 100;
+                }
+            }
+            if (people === "" || people <= 0 || !Number.isInteger(parseFloat(people))) {
+                document.getElementById('ernum').textContent = "Please enter a valid number of people";
+                document.getElementById('inper').style.borderColor = "red";
+                return;
+            } else {
+                document.getElementById('ernum').textContent = "";
+                document.getElementById('inper').style.borderColor = "";
+            }
+            let billAmount = parseFloat(bill);
+            let tipAmount = billAmount * tip;
+            let totalAmount = billAmount + tipAmount;
+            let tipAmountPerPerson = tipAmount / people;
+            let totalAmountPerPerson = totalAmount / people;
+            document.getElementById('tipam').textContent = "$" + tipAmountPerPerson.toFixed(2);
+            document.getElementById('total').textContent = "$" + totalAmountPerPerson.toFixed(2);
+        }
+        function reset() {
+            document.getElementById('reset').style.backgroundColor="rgb(38, 194, 173)";
+            document.getElementById('inbill').value = "";
+            document.getElementById('incus').value = "";
+            document.getElementById('inper').value = "";
+            document.getElementById('erbill').textContent = "";
+            document.getElementById('errtip').textContent = "";
+            document.getElementById('ernum').textContent = "";
+            document.getElementById('inbill').style.borderColor = "";
+            document.getElementById('incus').style.borderColor = "";
+            document.getElementById('inper').style.borderColor = "";
+            document.getElementById('tipam').textContent = "$0.00";
+            document.getElementById('total').textContent = "$0.00";
+            document.querySelector('.tipbut.active').style.backgroundColor="";
+            document.querySelector('.tipbut.active').style.color="";
+            document.querySelectorAll('.tipbut').forEach(btn => btn.classList.remove('active'));
+            tip = 0;
+            customTip = 0;
+        }
+    </script>
+</body>
+</html>
